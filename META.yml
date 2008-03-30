@@ -1,0 +1,21 @@
+--- 
+abstract: Coroutine compatible DBI
+author: 
+  - Anders Nor Berle <berle@cpan.org>
+distribution_type: module
+generated_by: Module::Install version 0.68
+license: perl
+meta-spec: 
+  url: http://module-build.sourceforge.net/META-spec-v1.3.html
+  version: 1.3
+name: DBIx-Coro
+no_index: 
+  directory: 
+    - inc
+    - t
+requires: 
+  Coro: 4.45
+  DBD::Pg: 2.5.0
+  DBI: 1.604
+  EV: 3.1
+version: 0.00_01
