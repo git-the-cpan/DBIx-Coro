@@ -1,4 +1,5 @@
-package DBIx::Coro::st;
+package # Hide from pause
+  DBIx::Coro::st;
 
 use Coro;
 use Coro::EV;

@@ -1,4 +1,5 @@
-package DBIx::Coro::db;
+package # Hide from pause
+  DBIx::Coro::db;
 
 use Carp;
 use Coro;

@@ -8,7 +8,7 @@ use base qw/DBI/;
 use strict;
 use warnings;
 
-our $VERSION = '0.00_02';
+our $VERSION = '0.00_03';
 
 1;
 

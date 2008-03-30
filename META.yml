@@ -22,4 +22,4 @@ requires:
   DBI: 1.604
   EV: 3.1
   Scope::Guard: 0.03
-version: 0.00_02
+version: 0.00_03
