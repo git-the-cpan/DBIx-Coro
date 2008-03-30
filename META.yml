@@ -2,6 +2,9 @@
 abstract: Coroutine compatible DBI
 author: 
   - Anders Nor Berle <berle@cpan.org>
+build_requires: 
+  Test::Exception: 0.27
+  Test::More: 0.72
 distribution_type: module
 generated_by: Module::Install version 0.68
 license: perl
@@ -18,4 +21,5 @@ requires:
   DBD::Pg: 2.5.0
   DBI: 1.604
   EV: 3.1
-version: 0.00_01
+  Scope::Guard: 0.03
+version: 0.00_02

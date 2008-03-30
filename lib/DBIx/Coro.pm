@@ -8,7 +8,7 @@ use base qw/DBI/;
 use strict;
 use warnings;
 
-our $VERSION = '0.00_01';
+our $VERSION = '0.00_02';
 
 1;
 
@@ -29,7 +29,7 @@ DBIx::Coro - Coroutine compatible DBI
   my $running = 1;
 
   async {
-    my $dbh = DBI->connect ($dsr,$username,$password,{ RootClass => 'DBIx::Coro' });
+    my $dbh = DBI->connect ($dsn,$username,$password,{ RootClass => 'DBIx::Coro' });
 
     print "Starting\n";
 
@@ -60,49 +60,49 @@ DBIx::Coro - Coroutine compatible DBI
 
 =head1 DESCRIPTION
 
-L<DBIx::Coro> is a module that subclasses DBI in order to provide
-asynchronous DBI queries. The way it works should be fairly stable, I
-haven't used any ugly hacks to achieve this functionality, but the
+L<DBIx::Coro> is a module that  subclasses L<DBI> in  order to provide
+asynchronous DBI queries. The way it  works should be fairly stable, I
+haven't used  any  ugly hacks to achieve  this functionality,  but the
 number of supported drivers is at the moment fairly limited. See below
 for more information about that.
 
-From a programming perspective, this module should behave just like
-DBI. If your program doesn't use coroutines, it will behave mostly like
-DBI usually does (But that would of course make this module kind of
-pointless). However, if run from a coroutine, other coroutines will
-be given a chance to run until the query has completed. This module
-should also be safe for multiple coroutines using the same database
-handle, but beware that only one query is run at a time. If a
-coroutine tries to use a database handle currently in use by another
-coroutine, it will block until the previous coroutine has finished.
+From a programming  perspective, this  module should  behave just like
+L<DBI>. If your program doesn't use  coroutines, it will behave mostly
+like L<DBI>  usually  does (But that would  of course make this module
+kind of pointless). However, if run from a coroutine, other coroutines
+will be  given a  chance to  run until  the query has  completed. This
+module  should also  be  safe for  multiple coroutines  using the same
+database handle, but beware that only one query is run at a time. If a
+coroutine tries  to use a database  handle currently in use by another
+coroutine, it  will block  until the previous  coroutine has finished.
 
-One important point to emphasis here is that it's B<queries> that are
+One important point  to emphasis here is that it's B<queries> that are
 asynchronous, not all communication with the database.
 
-Another important point is that since this module uses the same
-interface as DBI does, you can use it with DBI abstractions such as
-L<DBIx::Class> and it should just work.
+Another important  point is that since this  module  provides the same
+interface as L<DBI> does, you can use it with L<DBI> abstractions such
+as L<DBIx::Class> and it should just work.
 
 =head1 SUPPORTED DRIVERS
 
-Currently, this module will only work with L<DBD::Pg>. Why? Well,
-because PostgreSQL is the only database I've found that allows
-asynchronous queries. This module is really just some clever wiring
+Currently,  this module  will only  work  with L<DBD::Pg>. Why?  Well,
+because  PostgreSQL  is  the  only database  I've  found  that  allows
+asynchronous  queries. This module is  really just  some clever wiring
 between L<Coro> and L<DBD::Pg>.
 
 =head1 CAVEATS
 
 Aside from only supporting L<DBD::Pg>, there is another serious gotcha
-which seems fairly trivial but I've not been able to work around yet.
-Currently, you must use L<Coro::EV> as your loop, EV is hardcoded into
-this module because the L<AnyEvent> abstraction does not support the
-functionality needed.
+which seems fairly trivial but I've not  been able to work around yet.
+Currently, you must  use L<Coro::EV> as your  loop, L<EV> is hardcoded
+into this module because the L<AnyEvent> abstraction  does not support
+the functionality needed.
 
-To be more specific, this module needs to be able to watch a file
-descriptor number. L<AnyEvent> only supports watching filehandles.
+To be more  specific, this  module  needs  to be able  to watch a file
+descriptor  number. L<AnyEvent> only  supports  watching  filehandles.
 I've tried turning a file descriptor into a filehandle in perl, but so
-far been unsuccessfull. Any attempt to use say open or L<IO::Handle>
-results in the connection being destroyed. I would greatly appreciate
+far  been unsuccessfull. Any  attempt to use say open or L<IO::Handle>
+results in  the connection being destroyed. I would greatly appreciate
 help on how to fix this problem, but *please* try your solution before
 submitting it to me.
 
