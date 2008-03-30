@@ -1,9 +1,9 @@
 package # Hide from pause
   DBIx::Coro::db;
 
+use AnyEvent;
 use Carp;
 use Coro;
-use Coro::EV;
 use Coro::Semaphore;
 use DBI;
 use DBD::Pg;
@@ -50,6 +50,10 @@ sub connected {
 
   $self->{private_DBIx_Coro_mutex} = Coro::Semaphore->new (1);
 
+  open my $fh,">&=",$self->{pg_socket};
+
+  $self->{private_DBIx_Coro_fh} = $fh;
+
   return $self->SUPER::connected (@_);
 }
 
@@ -66,17 +70,13 @@ sub _coro_guard {
 sub _coro_wait_result {
   my ($self) = @_;
 
-  my $current = $Coro::current;
+  my $c = AnyEvent->condvar;
 
-  my $w = EV::io $self->{pg_socket},EV::READ,sub {
-    if ($self->pg_ready) {
-      $current->ready;
+  my $w = AnyEvent->io (fh => $self->{private_DBIx_Coro_fh},poll => 'r',cb => sub {
+      $c->broadcast if $self->pg_ready;
+    });
 
-      undef $current;
-    }
-  };
-
-  Coro::schedule while $current;
+  $c->wait;
 
   return $self->pg_result;
 }

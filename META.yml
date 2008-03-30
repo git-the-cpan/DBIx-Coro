@@ -17,9 +17,9 @@ no_index:
     - inc
     - t
 requires: 
+  AnyEvent: 2.9
   Coro: 4.45
   DBD::Pg: 2.5.0
   DBI: 1.604
-  EV: 3.1
   Scope::Guard: 0.03
-version: 0.00_03
+version: 0.00_04

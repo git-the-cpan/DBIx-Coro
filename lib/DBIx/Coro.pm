@@ -8,7 +8,7 @@ use base qw/DBI/;
 use strict;
 use warnings;
 
-our $VERSION = '0.00_03';
+our $VERSION = '0.00_04';
 
 1;
 
@@ -20,13 +20,13 @@ DBIx::Coro - Coroutine compatible DBI
 
 =head1 SYNOPSIS
 
+  use AnyEvent;
   use Coro;
-  use Coro::EV;
   use Coro::Timer;
   use DBI;
   use DBIx::Coro;
 
-  my $running = 1;
+  my $c = AnyEvent->condvar;
 
   async {
     my $dbh = DBI->connect ($dsn,$username,$password,{ RootClass => 'DBIx::Coro' });
@@ -37,18 +37,18 @@ DBIx::Coro - Coroutine compatible DBI
 
     print "Finished\n";
 
-    $running = 0;
+    $c->broadcast;
   };
 
   async {
-    while ($running) {
+    while (1) {
       print "Waiting...\n";
 
       Coro::Timer::sleep 1;
     }
   };
 
-  EV::loop while $running;
+  $c->wait;
 
   ### This should hopefully display something similar this...
   
@@ -90,29 +90,15 @@ because  PostgreSQL  is  the  only database  I've  found  that  allows
 asynchronous  queries. This module is  really just  some clever wiring
 between L<Coro> and L<DBD::Pg>.
 
-=head1 CAVEATS
-
-Aside from only supporting L<DBD::Pg>, there is another serious gotcha
-which seems fairly trivial but I've not  been able to work around yet.
-Currently, you must  use L<Coro::EV> as your  loop, L<EV> is hardcoded
-into this module because the L<AnyEvent> abstraction  does not support
-the functionality needed.
-
-To be more  specific, this  module  needs  to be able  to watch a file
-descriptor  number. L<AnyEvent> only  supports  watching  filehandles.
-I've tried turning a file descriptor into a filehandle in perl, but so
-far  been unsuccessfull. Any  attempt to use say open or L<IO::Handle>
-results in  the connection being destroyed. I would greatly appreciate
-help on how to fix this problem, but *please* try your solution before
-submitting it to me.
-
 =head1 ACKNOWLEDGEMENTS
 
 =over 4
 
 =item Marc Lehmann for writing L<Coro>.
 
-=item Matt S Trout for letting me know about RootClass.
+=item Matt S. Trout for help on DBI subclassing.
+
+=item Sam Vilain for solving the descriptor problem.
 
 =back
 

@@ -2,7 +2,6 @@ package # Hide from pause
   DBIx::Coro::st;
 
 use Coro;
-use Coro::EV;
 use DBI;
 
 use base qw/DBI::st/;
